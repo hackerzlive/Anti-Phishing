@@ -1,0 +1,33 @@
+function isPhishingURL(url) {
+  // Check if URL contains the @ symbol (common in phishing URLs)
+  if (url.indexOf('@') !== -1) {
+    return true;
+  }
+
+  // Check if URL uses the IP address instead of domain name (common in phishing URLs)
+  const ipAddressRegex = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/;
+  if (ipAddressRegex.test(url)) {
+    return true;
+  }
+
+  // Check if URL uses a subdomain that contains a common keyword used in phishing URLs
+  const subdomainRegex = /^https?:\/\/(?:[^.\/]+\.)?([^.\/]+\.[^.\/]+)/;
+  const match = url.match(subdomainRegex);
+  if (match && match[1]) {
+    const keywords = ['paypal', 'login', 'signin', 'secure', 'confirm', 'account', 'banking', 'verify', 'update'];
+    const subdomain = match[1].toLowerCase();
+    for (const keyword of keywords) {
+      if (subdomain.includes(keyword)) {
+        return true;
+      }
+    }
+  }
+
+  // Check if URL uses a top-level domain that is commonly used in phishing URLs
+  const tldRegex = /\.com(\.|$)/i;
+  if (tldRegex.test(url)) {
+    return true;
+  }
+
+  return false;
+}
